@@ -1,10 +1,24 @@
 import s3Service from "../aws-services/s3-service.js";
+import express from "express";
+import bodyParser from "body-parser";
 
-export function listBuckets(req, res) {
+const bucketsRouter = express.Router();
+bucketsRouter.get('', listBuckets);
+bucketsRouter.get('/:bucket', listBucketItems);
+bucketsRouter.get('/:bucket/:fileName', downloadFile)
+bucketsRouter.post('', bodyParser.json(), createBucket);
+bucketsRouter.post('/:bucket', bodyParser.json(), uploadFile);
+bucketsRouter.delete('/:bucket', deleteBucket);
+bucketsRouter.delete('/:bucket/:fileName', removeFile);
+console.log("/buckets router initialized");
+
+export default bucketsRouter;
+
+function listBuckets(req, res) {
   return s3Service.listBuckets().then(buckets => res.send({buckets})).catch((err) => res.status(500).send(err));
 }
 
-export function listBucketItems(req, res) {
+function listBucketItems(req, res) {
   const bucketName = req.params["bucket"];
   if (!bucketName) {
     return res.status(400).send("Specify bucket name");
@@ -12,7 +26,7 @@ export function listBucketItems(req, res) {
   return s3Service.listBucketItems(bucketName).then(buckets => res.send({buckets})).catch((err) => res.status(500).send(err));
 }
 
-export function downloadFile(req, res) {
+function downloadFile(req, res) {
   const bucketName = req.params["bucket"];
   const fileName = req.params["fileName"];
   if (!bucketName || !fileName) {
@@ -21,7 +35,7 @@ export function downloadFile(req, res) {
   return s3Service.downloadFile(bucketName, fileName).then(buckets => res.send({buckets})).catch((err) => res.status(500).send(err));
 }
 
-export function createBucket(req, res) {
+function createBucket(req, res) {
   const bucketName = req.body["bucket"];
   if (!bucketName) {
     return res.status(400).send("Specify bucket name");
@@ -29,7 +43,7 @@ export function createBucket(req, res) {
   return s3Service.createBucket(bucketName).then(buckets => res.send({buckets})).catch((err) => res.status(500).send(err));
 }
 
-export function uploadFile(req, res) {
+function uploadFile(req, res) {
   const bucketName = req.params["bucket"];
   if (!bucketName) {
     return res.status(400).send("Specify bucket name");
@@ -42,7 +56,7 @@ export function uploadFile(req, res) {
   return s3Service.uploadFile(bucketName, fileName).then(buckets => res.send({buckets})).catch((err) => res.status(500).send(err));
 }
 
-export function removeFile(req, res) {
+function removeFile(req, res) {
   const bucketName = req.params["bucket"];
   const fileName = req.params["fileName"];
   if (!bucketName || !fileName) {
@@ -51,7 +65,7 @@ export function removeFile(req, res) {
   return s3Service.removeFile(bucketName, fileName).then(buckets => res.send({buckets})).catch((err) => res.status(500).send(err));
 }
 
-export function deleteBucket(req, res) {
+function deleteBucket(req, res) {
   const bucketName = req.params["bucket"];
   if (!bucketName) {
     return res.status(400).send("Specify bucket name");
