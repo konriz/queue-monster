@@ -19,14 +19,18 @@ app.post('/', (req, res) => rootController(rootService, req, res).addLeaf());
 
 app.get('/buckets', bucketsRoute.listBuckets);
 
-app.get('/buckets/:name', bucketsRoute.listBucketItems);
+app.get('/buckets/:bucket', bucketsRoute.listBucketItems);
+
+app.get('/buckets/:bucket/:fileName', bucketsRoute.downloadFile)
 
 app.post('/buckets', bodyParser.json(), bucketsRoute.createBucket);
 
-app.post('/buckets/:name', bodyParser.json(), bucketsRoute.uploadFile);
+app.post('/buckets/:bucket', bodyParser.json(), bucketsRoute.uploadFile);
 
 
-app.delete('/buckets/:name', bucketsRoute.deleteBucket);
+app.delete('/buckets/:bucket', bucketsRoute.deleteBucket);
+app.delete('/buckets/:bucket/:fileName', bucketsRoute.removeFile);
+
 
 app.listen(port, callback);
 
