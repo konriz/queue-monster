@@ -1,5 +1,5 @@
 import express from "express";
-import {RootService} from "../root/root-service.js";
+import {RootService} from "../../root/root-service.js";
 
 const rootService = new RootService();
 

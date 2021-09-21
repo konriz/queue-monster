@@ -1,12 +1,14 @@
-import s3Service from "../aws-services/s3-service.js";
+import s3Service from "../../aws-services/s3-service.js";
 import express from "express";
 import bodyParser from "body-parser";
+import validate from "../../middlewares/joi/validate.js";
+import bucketsValidator from "./bucketsValidator.js";
 
 const bucketsRouter = express.Router();
 bucketsRouter.get('', listBuckets);
-bucketsRouter.get('/:bucket', listBucketItems);
+bucketsRouter.get('/:bucket', validate(bucketsValidator.bucketSchema, 'params') , listBucketItems);
 bucketsRouter.get('/:bucket/:fileName', downloadFile)
-bucketsRouter.post('', bodyParser.json(), createBucket);
+bucketsRouter.post('', bodyParser.json(), validate(bucketsValidator.bucketSchema, 'body'), createBucket);
 bucketsRouter.post('/:bucket', bodyParser.json(), uploadFile);
 bucketsRouter.delete('/:bucket', deleteBucket);
 bucketsRouter.delete('/:bucket/:fileName', removeFile);

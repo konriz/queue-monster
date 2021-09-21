@@ -1,5 +1,5 @@
-import rootRouter from "./rootRouter.js";
-import bucketsRouter from "./bucketsRouter.js";
+import rootRouter from "./root/rootRouter.js";
+import bucketsRouter from "./buckets/bucketsRouter.js";
 import express from "express";
 
 const mainRouter = express.Router();
